@@ -13,8 +13,8 @@
 % modules.  From this, plot movement of tensegrity snake through sequence.
 % Also return distance information for each outer node.
 
-M = readmatrix('UNDULATION,WEIRD RESULTS .csv','Range','C6:BD1089');
-final_row = 1084;
+M = readmatrix('HYRBID INCHWORM WITH SUPPORT MARKERS.csv','Range','C6:BG3512');
+final_row = 3507;
 
 % Set last row that each node contains Vicon data
 lastE1 = final_row;
@@ -25,7 +25,7 @@ lastE5 = final_row;
 lastE6 = final_row;
 
 % Generate video info
-video_title = "undulation_tracking.mp4"; %Update with descriptive title and make sure not to overwrite previous video
+video_title = "hybrid_inchworm_tracking.mp4"; %Update with descriptive title and make sure not to overwrite previous video
 v = VideoWriter(video_title, "MPEG-4");
 v.FrameRate = 15; %Set video frame rate
 open(v);
@@ -33,28 +33,28 @@ run_video = 1;
 % run_video = 0;
 
 % Gather all motor endpoints
-E1 = M(1:final_row, 1:3);
-E2 = M(1:final_row, 10:12);
-E3 = M(1:final_row, 19:21);
+E1 = M(1:final_row, 49:51);
+E2 = M(1:final_row, 1:3);
+E3 = M(1:final_row, 10:12);
 E4 = M(1:final_row, 28:30);
-E5 = M(1:final_row, 37:39);
-E6 = M(1:final_row, 46:48);
+E5 = M(1:final_row, 19:21);
+E6 = M(1:final_row, 37:39);
 
 % Gather all midpoints
-M1 = M(1:final_row, 4:6);
-M2 = M(1:final_row, 13:15);
-M3 = M(1:final_row, 22:24);
+M1 = M(1:final_row, 52:54);
+M2 = M(1:final_row, 4:6);
+M3 = M(1:final_row, 13:15);
 M4 = M(1:final_row, 31:33);
-M5 = M(1:final_row, 40:42);
-M6 = M(1:final_row, 49:51);
+M5 = M(1:final_row, 22:24);
+M6 = M(1:final_row, 40:42);
 
 % Gather all inner points
-I1 = M(1:final_row, 7:9);
-I2 = M(1:final_row, 16:18);
-I3 = M(1:final_row, 25:27);
+I1 = M(1:final_row, 55:57);
+I2 = M(1:final_row, 7:9);
+I3 = M(1:final_row, 16:18);
 I4 = M(1:final_row, 34:36);
-I5 = M(1:final_row, 43:45);
-I6 = M(1:final_row, 52:54);
+I5 = M(1:final_row, 25:27);
+I6 = M(1:final_row, 43:45);
 
 % Initialize tracking variables for plotting purposes
 EndpointsMod1Tracking = zeros(1, 3, final_row);
@@ -63,7 +63,7 @@ EndpointsMod1TrackingColor = zeros(1, final_row);
 EndpointsMod2TrackingColor = zeros(1, final_row);
 
 % Plot overall distance + path traveled
-for i = 1:1:final_row
+for i = 1:10:final_row
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
     fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
@@ -109,17 +109,17 @@ for i = 1:1:final_row
     EndpointsMod1Tracking(:,:,i) = (E1(i,:) + E2(i,:) + E3(i,:))/3;
     EndpointsMod2Tracking(:,:,i) = (E4(i,:) + E5(i,:) + E6(i,:))/3;
 
-    EndpointsMod1TrackingColor(i) = 0 + (i/1084);
-    EndpointsMod2TrackingColor(i) = 0 + (i/1084);
+    EndpointsMod1TrackingColor(i) = 0 + (i/final_row);
+    EndpointsMod2TrackingColor(i) = 0 + (i/final_row);
 
-    for j = 1:1:i
+    for j = 1:10:i
         plot3(EndpointsMod1Tracking(:,1,j), EndpointsMod1Tracking(:,2,j), EndpointsMod1Tracking(:,3,j), 'x', 'Color', [0 0 EndpointsMod1TrackingColor(j)], 'MarkerSize', 15, 'LineWidth', 3)
         hold on
         plot3(EndpointsMod2Tracking(:,1,j), EndpointsMod2Tracking(:,2,j), EndpointsMod2Tracking(:,3,j), 'x', 'Color', [EndpointsMod2TrackingColor(j) 0 0], 'MarkerSize', 15, 'LineWidth', 3)
         hold on 
     end
-       
-    
+
+
     title("Timestep ", i);
     % Write video frame
     if run_video == 1
@@ -196,7 +196,7 @@ title(t, 'Undulation Gait');
 % Track two endpoints throughout gait movement
 % Manually set time that different gaits occur in a movement sequence
 figure(3)
-for i = [1, 1080] % Plot starting and ending full robot configurations
+for i = [1, final_row] % Plot starting and ending full robot configurations
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
     fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
@@ -240,12 +240,12 @@ for i = [1, 1080] % Plot starting and ending full robot configurations
     hold on
 end
 
-for i = 1:3:1081
+for i = 1:3:final_row
     EndpointsMod1Tracking = (E1(i,:) + E2(i,:) + E3(i,:))/3;
     EndpointsMod2Tracking = (E4(i,:) + E5(i,:) + E6(i,:))/3;
 
-    EndpointsMod1TrackingColor = 0 + (i/1081);
-    EndpointsMod2TrackingColor = 0 + (i/1081);
+    EndpointsMod1TrackingColor = 0 + (i/final_row);
+    EndpointsMod2TrackingColor = 0 + (i/final_row);
 
     plot3(EndpointsMod1Tracking(:,1), EndpointsMod1Tracking(:,2), EndpointsMod1Tracking(:,3), 'x', 'Color', [0 0 EndpointsMod1TrackingColor], 'MarkerSize', 15, 'LineWidth', 3)
     hold on
@@ -253,7 +253,7 @@ for i = 1:3:1081
     hold on
 end
 %view(0,0)
-title(t, 'Undulation Gait Tracked');
+title(t, 'Full Inchworm Gait Tracked');
 
 
 
