@@ -13,19 +13,19 @@
 % modules.  From this, plot movement of tensegrity snake through sequence.
 % Also return distance information for each outer node.
 
-M = readmatrix('iNCHWORM - FULL RESULTS .csv','Range','C6:BD3785');
-final_row = 3780;
+M = readmatrix('UNDULATION,WEIRD RESULTS .csv','Range','C6:BD1089');
+final_row = 1084;
 
 % Set last row that each node contains Vicon data
 lastE1 = final_row;
 lastE2 = final_row;
 lastE3 = final_row;
 lastE4 = final_row;
-lastE5 = 1255;
+lastE5 = final_row;
 lastE6 = final_row;
 
 % % Generate video info
-% video_title = "full_inchworm_every_frame.mp4"; %Update with descriptive title and make sure not to overwrite previous video
+% video_title = "undulation_tracking.mp4"; %Update with descriptive title and make sure not to overwrite previous video
 % v = VideoWriter(video_title, "MPEG-4");
 % v.FrameRate = 15; %Set video frame rate
 % open(v);
@@ -61,9 +61,6 @@ EndpointsMod1Tracking = zeros(1, 3, final_row);
 EndpointsMod2Tracking = zeros(1, 3, final_row);
 EndpointsMod1TrackingColor = zeros(1, final_row);
 EndpointsMod2TrackingColor = zeros(1, final_row);
-
-% Identify different gaits in run
-
 
 % Plot overall distance + path traveled
 for i = 1:1:final_row
@@ -112,18 +109,17 @@ for i = 1:1:final_row
     EndpointsMod1Tracking(:,:,i) = (E1(i,:) + E2(i,:) + E3(i,:))/3;
     EndpointsMod2Tracking(:,:,i) = (E4(i,:) + E5(i,:) + E6(i,:))/3;
 
-    EndpointsMod1TrackingColor(i) = 0 + (i/final_row);
-    EndpointsMod2TrackingColor(i) = 0 + (i/final_row);
+    EndpointsMod1TrackingColor(i) = 0 + (i/1084);
+    EndpointsMod2TrackingColor(i) = 0 + (i/1084);
 
-    % Commenting the 'x' endpoint visualization for now for faster code execution
-    % for j = 1:10:i
+    % for j = 1:1:i
     %     plot3(EndpointsMod1Tracking(:,1,j), EndpointsMod1Tracking(:,2,j), EndpointsMod1Tracking(:,3,j), 'x', 'Color', [0 0 EndpointsMod1TrackingColor(j)], 'MarkerSize', 15, 'LineWidth', 3)
     %     hold on
     %     plot3(EndpointsMod2Tracking(:,1,j), EndpointsMod2Tracking(:,2,j), EndpointsMod2Tracking(:,3,j), 'x', 'Color', [EndpointsMod2TrackingColor(j) 0 0], 'MarkerSize', 15, 'LineWidth', 3)
     %     hold on 
     % end
-
-
+       
+    
     title("Timestep ", i);
     % Write video frame
     if run_video == 1
@@ -200,7 +196,7 @@ title(t, 'Undulation Gait');
 % Track two endpoints throughout gait movement
 % Manually set time that different gaits occur in a movement sequence
 figure(3)
-for i = [1, 3780] % Plot starting and ending full robot configurations
+for i = [1, 1080] % Plot starting and ending full robot configurations
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
     fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
@@ -244,12 +240,12 @@ for i = [1, 3780] % Plot starting and ending full robot configurations
     hold on
 end
 
-% for i = 1:3:3780
+% for i = 1:3:1081
 %     EndpointsMod1Tracking = (E1(i,:) + E2(i,:) + E3(i,:))/3;
 %     EndpointsMod2Tracking = (E4(i,:) + E5(i,:) + E6(i,:))/3;
 % 
-%     EndpointsMod1TrackingColor = 0 + (i/3780);
-%     EndpointsMod2TrackingColor = 0 + (i/3780);
+%     EndpointsMod1TrackingColor = 0 + (i/1081);
+%     EndpointsMod2TrackingColor = 0 + (i/1081);
 % 
 %     plot3(EndpointsMod1Tracking(:,1), EndpointsMod1Tracking(:,2), EndpointsMod1Tracking(:,3), 'x', 'Color', [0 0 EndpointsMod1TrackingColor], 'MarkerSize', 15, 'LineWidth', 3)
 %     hold on
@@ -257,12 +253,11 @@ end
 %     hold on
 % end
 %view(0,0)
-title(t, 'Full Inchworm Gait Tracked');
-
+title(t, 'Undulation Gait Tracked');
 
 % Figuring out reference frame stuff
 figure(4)
-for i = [1, 145, 165, 300, 315, 590, 680, 900, 950, 1220, 1235, 1500] % Plot starting and ending full robot configurations
+for i = [32, 86, 87, 151, 152, 227, 228, 390, 391, 466, 467, 628, 629, 715, 716, 878, 879, 953] % Plot starting and ending full robot configurations
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
     fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
@@ -312,7 +307,7 @@ for i = [1, 145, 165, 300, 315, 590, 680, 900, 950, 1220, 1235, 1500] % Plot sta
     [uhat2, vhat2, what2, origin2] = movement(E4(i,:), E5(i,:), E6(i,:), final_row);
 
     % Calculate rotation and translation from these orthonormal basis vectors
-    if i == 1 || i == 165 || i == 315 || i == 680 || i == 950 || i == 1235
+    if i == 32 || i == 87 || i == 152 || i == 228 || i == 391 || i == 467 || i == 629 || i == 716 || i == 879
         rotation1 = [uhat'; what'; vhat'];
         translation1 = origin;
         transformation1 = [rotation1, translation1; 0,0,0,1];
@@ -322,7 +317,7 @@ for i = [1, 145, 165, 300, 315, 590, 680, 900, 950, 1220, 1235, 1500] % Plot sta
         transformation1end2 = [rotation1end2, translation1end2; 0,0,0,1];
     end
 
-    if i == 145 || i == 300 || i == 590 || i == 900 || i == 1220 || i == 1500
+    if i == 86 || i == 151 || i == 227 || i == 390 || i == 466 || i == 628 || i == 715 || i == 878 || i == 953
         rotation2 = [uhat'; what'; vhat'];
         translation2 = origin;
         transformation2 = [rotation2, translation2; 0,0,0,1];
@@ -367,14 +362,15 @@ for i = [1, 145, 165, 300, 315, 590, 680, 900, 950, 1220, 1235, 1500] % Plot sta
     hold on
 
 end
-title(t, 'Inchworm 3D Movement');
+title(t, 'Undulation 3D Movement');
+
 
 
 
 % [rotx1, roty1, rotz1, t1] = tracking(E1, E2, E3, final_row);
 % [rotx2, roty2, rotz2, t2] = tracking(E4, E5, E6, final_row);
-
-
+% 
+% 
 % fprintf('Mid of E1, E2, E3 rotated %.2d%c, %.2d%c, %.2d%c in X, Y, and Z, and translated %.2dmm in X, %.2dmm in Y, %.2dmm in Z\n', round(rotx1), char(176), round(roty1), char(176), round(rotz1), char(176), round(t1(1)), round(t1(2)), round(t1(3)))
 % fprintf('Mid of E4, E5, E6 rotated %.2d%c, %.2d%c, %.2d%c in X, Y, and Z, and translated %.2dmm in X, %.2dmm in Y, %.2dmm in Z\n', round(rotx2), char(176), round(roty2), char(176), round(rotz2), char(176), round(t2(1)), round(t2(2)), round(t2(3)))
 
@@ -448,7 +444,6 @@ function [rotx, roty, rotz, t] = tracking(E1, E2, E3, final_row)
     %t = -R*(repmat(centroid_first, 3, 1)) + (repmat(centroid_last, 3, 1));
 end
 
-% function [rx, ry, rz, trans] = movement(E1, E2, E3, final_row)
 function [uhat, vhat, what, origin] = movement(E1, E2, E3, final_row)
     % Define c.s. in starting and end frames, then calculate rotation 
     % matrix and translation vector between first and last frames
@@ -479,17 +474,4 @@ function [uhat, vhat, what, origin] = movement(E1, E2, E3, final_row)
 
     % Calculate the third basis vector using the cross product
     what = cross(uhat, vhat);
-end
-
-function [d] = diameter(E1, E2, E3, final_row)
-    % Calculate the diameter of a circle comprising E1, E2, E3
-    % Use this to track how the diameter changes over time
-
-    for i = 1:1:final_row
-        center = [(E1(i,1) + E2(i,1) + E3(i,1))/3; (E1(i,2) + E2(i,2) + E3(i,2))/3; (E1(i,3) + E2(i,3) + E3(i,3))/3];
-
-
-    end
-    
-   
 end
