@@ -56,6 +56,8 @@ I4 = M(1:final_row, 34:36);
 I5 = M(1:final_row, 43:45);
 I6 = M(1:final_row, 52:54);
 
+
+
 % Initialize tracking variables for plotting purposes
 EndpointsMod1Tracking = zeros(1, 3, final_row);
 EndpointsMod2Tracking = zeros(1, 3, final_row);
@@ -63,11 +65,13 @@ EndpointsMod1TrackingColor = zeros(1, final_row);
 EndpointsMod2TrackingColor = zeros(1, final_row);
 
 % Plot overall distance + path traveled
-for i = 1:1:final_row
+for i = 1:100:final_row
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
     fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
     hold on
+    [center, radius, x, y, z] = triangle2circle(E1(i,:), E2(i,:), E3(i,:));
+
     MidpointsMod1 = [M1(i,:); M2(i,:); M3(i,:); M1(i,:)];
     fill3(MidpointsMod1(:,1),MidpointsMod1(:,2),MidpointsMod1(:,3), 'c-o')
     hold on
@@ -88,22 +92,22 @@ for i = 1:1:final_row
 
     % Tendons 1 - 6 since we're missing node 1 points
     Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
-    plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     hold on
     Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-    plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     hold on
     Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-    plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     hold on
     Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
-    plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     hold on
     Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
-    plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     hold on
     Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
-    plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     hold on
 
     EndpointsMod1Tracking(:,:,i) = (E1(i,:) + E2(i,:) + E3(i,:))/3;
@@ -128,15 +132,144 @@ for i = 1:1:final_row
         hold off
     end
 end
+set(gca, 'Color', 'white')
 
 if run_video == 1
     close(v)
 end
 
+figure(2)
+for i = 1:1:final_row
+    % Time data
+    y(i) = i;
+
+    % Calculate disk face for each of the six icosahedrons
+    [centerE1, radiusE1, xE1, yE1, zE1] = triangle2circle(E1(i,:), E2(i,:), E3(i,:));
+    E1Diameter(i) = radiusE1*2;
+
+    [centerM1, radiusM1, xM1, yM1, zM1] = triangle2circle(M1(i,:), M2(i,:), M3(i,:));
+    M1Diameter(i) = radiusM1*2;
+
+    [centerI1, radiusI1, xI1, yI1, zI1] = triangle2circle(I1(i,:), I2(i,:), I3(i,:));
+    I1Diameter(i) = radiusI1*2;
+
+    [centerE2, radiusE2, xE2, yE2, zE2] = triangle2circle(E4(i,:), E5(i,:), E6(i,:));
+    E2Diameter(i) = radiusE2*2;
+
+    [centerM2, radiusM2, xM2, yM2, zM2] = triangle2circle(M4(i,:), M5(i,:), M6(i,:));
+    M2Diameter(i) = radiusM2*2;
+
+    [centerI2, radiusI2, xI2, yI2, zI2] = triangle2circle(I4(i,:), I5(i,:), I6(i,:));
+    I2Diameter(i) = radiusI2*2;
+    
+end
+
+scatter(E1Diameter, y, 'b')
+hold on
+scatter(M1Diameter, y, 'r')
+hold on
+scatter(I1Diameter, y, 'g')
+hold on
+scatter(E2Diameter, y, 'c')
+hold on
+scatter(M2Diameter, y, 'm')
+hold on
+scatter(I2Diameter, y, 'y')
+set(gca, 'Color', 'white')
+
+
+figure(3)
+% for i = 1:100:final_row
+for i = final_row
+    % Calculate disk face for each of the six icosahedrons
+    % plotDisk(xE1, yE1, zE1, "#C7A491")
+    % plotDisk(xM1, yM1, zM1, "#EECFCA")
+    % plotDisk(xI1, yI1, zI1, "#5C4033")
+    % plotDisk(xE2, yE2, zE2, "#919682")
+    % plotDisk(xM2, yM2, zM2, "#C7CDBF")
+    % plotDisk(xI2, yI2, zI2, "#595E48")
+
+    % Cute colors
+    plotDisk(xE1, yE1, zE1, hex2rgb("#C7A491"))
+    plotDisk(xM1, yM1, zM1, hex2rgb("#EECFCA"))
+    plotDisk(xI1, yI1, zI1, hex2rgb("#997B66"))
+    plotDisk(xE2, yE2, zE2, hex2rgb("#919682"))
+    plotDisk(xM2, yM2, zM2, hex2rgb("#C7CDBF"))
+    plotDisk(xI2, yI2, zI2, hex2rgb("#595E48"))
+
+    % % White only
+    % plotDisk(xE1, yE1, zE1, 'w')
+    % plotDisk(xM1, yM1, zM1, 'w')
+    % plotDisk(xI1, yI1, zI1, 'w')
+    % plotDisk(xE2, yE2, zE2, 'w')
+    % plotDisk(xM2, yM2, zM2, 'w')
+    % plotDisk(xI2, yI2, zI2, 'w')
+    % % Tendons 1 - 6 since we're missing node 1 points
+    % Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+    % plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+    % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+    % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
+    % plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
+    % plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
+    % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+
+    % Cute colors
+    Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+    plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+    plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+    plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
+    plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
+    plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
+    plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+
+    % Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+    % plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+    % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+    % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
+    % plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
+    % plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
+    % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+end
+set(gca, 'Color', 'white')
+
+
 
 % Plot different gaits within movement
 % Manually set time that different gaits occur in a movement sequence
-figure(2)
+figure(4)
 t = tiledlayout(2,2);
 
 for i = [1, 250, 700, 1080]
@@ -195,7 +328,7 @@ title(t, 'Undulation Gait');
 
 % Track two endpoints throughout gait movement
 % Manually set time that different gaits occur in a movement sequence
-figure(3)
+figure(5)
 for i = [1, 1080] % Plot starting and ending full robot configurations
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
@@ -239,6 +372,7 @@ for i = [1, 1080] % Plot starting and ending full robot configurations
     plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     hold on
 end
+set(gca, 'Color', 'white')
 
 % for i = 1:3:1081
 %     EndpointsMod1Tracking = (E1(i,:) + E2(i,:) + E3(i,:))/3;
@@ -256,7 +390,7 @@ end
 title(t, 'Undulation Gait Tracked');
 
 % Figuring out reference frame stuff
-figure(4)
+figure(6)
 for i = [32, 86, 87, 151, 152, 227, 228, 390, 391, 466, 467, 628, 629, 715, 716, 878, 879, 953] % Plot starting and ending full robot configurations
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
@@ -363,7 +497,7 @@ for i = [32, 86, 87, 151, 152, 227, 228, 390, 391, 466, 467, 628, 629, 715, 716,
 
 end
 title(t, 'Undulation 3D Movement');
-
+set(gca, 'Color', 'white')
 
 
 
@@ -474,4 +608,39 @@ function [uhat, vhat, what, origin] = movement(E1, E2, E3, final_row)
 
     % Calculate the third basis vector using the cross product
     what = cross(uhat, vhat);
+end
+
+% Specify circle vectors
+function [center, radius, x, y, z] = triangle2circle(P1, P2, P3)
+    % Describe the edges of the triangle by defining two vectors from P1
+    u = P2 - P1;
+    v = P3 - P1;
+
+    % Define normal vector (orientation in 3D)
+    norm_temp = cross(u,v);
+    normal = norm_temp / norm(norm_temp);
+
+    % Set up linear set of equations based off three points and solve it to
+    % generate the circle center, then use that to calculate the radius
+    A = [2*u; 2*v; normal];
+    b = [dot(P2, P2) - dot(P1, P1); dot(P3, P3) - dot(P1, P1); dot(normal, P1)];
+    center = (A \ b)'; % Solve the linear system
+    radius = norm(center - P1);
+
+    % 6 variables to parameterize 3D circle
+    phi = atan2(normal(2),normal(1)); % azimuth angle, in [-pi, pi]
+    theta = atan2(sqrt(normal(1)^2 + normal(2)^2), normal(3)); % zenith angle, in [0,pi]    
+    t = 0:pi/32:2*pi;
+    x = center(1) - radius*( cos(t)*sin(phi) + sin(t)*cos(theta)*cos(phi) );
+    y = center(2) + radius*( cos(t)*cos(phi) - sin(t)*cos(theta)*sin(phi) );
+    z = center(3) + radius*sin(t)*sin(theta);
+    % plot3(x,y,z,'r')
+    % patch(x,y,z,'r')
+    % hold on
+end
+
+function plotDisk(x, y, z, color)
+    plot3(x,y,z, 'Color', color)
+    patch(x,y,z, color)
+    hold on
 end
