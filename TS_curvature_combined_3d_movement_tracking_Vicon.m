@@ -46,13 +46,13 @@ lastE4 = final_row;
 lastE5 = final_row;
 lastE6 = final_row;
 
-% Generate video info
-video_title = "curvature_tracking.avi"; %Update with descriptive title and make sure not to overwrite previous video
-v = VideoWriter(video_title, "Uncompressed AVI");
-v.FrameRate = 15; %Set video frame rate
-open(v);
-run_video = 1;
-% run_video = 0;
+% % Generate video info
+% video_title = "curvature_tracking.avi"; %Update with descriptive title and make sure not to overwrite previous video
+% v = VideoWriter(video_title, "Uncompressed AVI");
+% v.FrameRate = 15; %Set video frame rate
+% open(v);
+% run_video = 1;
+run_video = 0;
 
 % Gather all motor endpoints
 E1 = M(1:final_row, 1:3);
@@ -93,21 +93,21 @@ EndpointsMod2TrackingColor = zeros(1, final_row);
 % ("#919682")
 % ("#C7CDBF")
 % ("#595E48")
-
-% Plot overall distance + path traveled for each of the 6 curvatures
-plotCurvature(v, run_video, Motor1Start, Motor1End, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvature(v, run_video, Motor2Start, Motor2End, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvature(v, run_video, Motor3Start, Motor3End, "#997B66", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvature(v, run_video, Motor1and2Start, Motor1and2End, "#919682", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvature(v, run_video, Motor1and3Start, Motor1and3End, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvature(v, run_video, Motor2and3Start, Motor2and3End, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-
-if run_video == 1
-    close(v)
-end
+% 
+% % Plot overall distance + path traveled for each of the 6 curvatures
+% plotCurvature(v, run_video, Motor1Start, Motor1End, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvature(v, run_video, Motor2Start, Motor2End, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvature(v, run_video, Motor3Start, Motor3End, "#997B66", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvature(v, run_video, Motor1and2Start, Motor1and2End, "#919682", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvature(v, run_video, Motor1and3Start, Motor1and3End, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvature(v, run_video, Motor2and3Start, Motor2and3End, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% 
+% if run_video == 1
+%     close(v)
+% end
 
 % Plot end position
-figure(2)
+% % figure(2)
 tiledlayout(3,2);
 plotCurvatureFinal(351, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
 plotCurvatureFinal(1261, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
@@ -117,68 +117,183 @@ plotCurvatureFinal(4331, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
 plotCurvatureFinal(5271, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
 
 
+figure(2)
+[uhat, vhat, what, origin] = movement(E1(1,:), E2(1,:), E3(1,:), final_row);
+rotation1 = [uhat'; what'; vhat'];
+translation1 = origin;
+transformation1 = [rotation1, translation1; 0,0,0,1];
+
+plotCurvatureEndpoints(351, "#C7A491", E1, E2, E3)
+% Calculate frame based off orthonormal basis vectors
+[uhat, vhat, what, origin] = movement(E1(351,:), E2(351,:), E3(351,:), final_row);
+rotation2 = [uhat'; what'; vhat'];
+translation2 = origin;
+transformation2 = [rotation2, translation2; 0,0,0,1];
+T_rel = inv(transformation2)*transformation1;
+t_rel = T_rel(1:3, 4);
+d1 = norm(t_rel);
+R_rel = T_rel(1:3, 1:3);
+
+% 4. Convert Rotation to human-readable format (e.g., Euler Angles or Axis-Angle)
+axisang = rotm2axang(R_rel); % Axis of rotation and total angle
+angle_deg = rad2deg(axisang(4));
+
+% Display Results
+fprintf('Relative Translation: %.2f\n', d1);
+%fprintf('Relative Euler Angles (deg): [%.2f, %.2f, %.2f] and [%.2f, %.2f, %.2f]\n', euler_rel, euler_rel2);
+fprintf('Total Rotation Angle: %.2f degrees\n', angle_deg);
+
+q_scale = 50; % Adjust length for visibility
+quiver3(origin(1), origin(2), origin(3), uhat(1), uhat(2), uhat(3), q_scale, 'r', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), vhat(1), vhat(2), vhat(3), q_scale, 'g', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), what(1), what(2), what(3), q_scale, 'b', 'LineWidth', 5, 'MaxHeadSize', 2);
+hold on
+
+plotCurvatureEndpoints(1261, "#EECFCA", E1, E2, E3)
+% Calculate frame based off orthonormal basis vectors
+[uhat, vhat, what, origin] = movement(E1(1261,:), E2(1261,:), E3(1261,:), final_row);
+rotation2 = [uhat'; what'; vhat'];
+translation2 = origin;
+transformation2 = [rotation2, translation2; 0,0,0,1];
+T_rel = inv(transformation2)*transformation1;
+t_rel = T_rel(1:3, 4);
+d1 = norm(t_rel);
+R_rel = T_rel(1:3, 1:3);
+
+% 4. Convert Rotation to human-readable format (e.g., Euler Angles or Axis-Angle)
+axisang = rotm2axang(R_rel); % Axis of rotation and total angle
+angle_deg = rad2deg(axisang(4));
+
+% Display Results
+fprintf('Relative Translation: %.2f\n', d1);
+%fprintf('Relative Euler Angles (deg): [%.2f, %.2f, %.2f] and [%.2f, %.2f, %.2f]\n', euler_rel, euler_rel2);
+fprintf('Total Rotation Angle: %.2f degrees\n', angle_deg);
+
+q_scale = 50; % Adjust length for visibility
+quiver3(origin(1), origin(2), origin(3), uhat(1), uhat(2), uhat(3), q_scale, 'r', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), vhat(1), vhat(2), vhat(3), q_scale, 'g', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), what(1), what(2), what(3), q_scale, 'b', 'LineWidth', 5, 'MaxHeadSize', 2);
+hold on
+
+plotCurvatureEndpoints(2401, "#997B66", E1, E2, E3)
+% Calculate frame based off orthonormal basis vectors
+[uhat, vhat, what, origin] = movement(E1(2401,:), E2(2401,:), E3(2401,:), final_row);
+rotation2 = [uhat'; what'; vhat'];
+translation2 = origin;
+transformation2 = [rotation2, translation2; 0,0,0,1];
+T_rel = inv(transformation2)*transformation1;
+t_rel = T_rel(1:3, 4);
+d1 = norm(t_rel);
+R_rel = T_rel(1:3, 1:3);
+
+% 4. Convert Rotation to human-readable format (e.g., Euler Angles or Axis-Angle)
+axisang = rotm2axang(R_rel); % Axis of rotation and total angle
+angle_deg = rad2deg(axisang(4));
+
+% Display Results
+fprintf('Relative Translation: %.2f\n', d1);
+%fprintf('Relative Euler Angles (deg): [%.2f, %.2f, %.2f] and [%.2f, %.2f, %.2f]\n', euler_rel, euler_rel2);
+fprintf('Total Rotation Angle: %.2f degrees\n', angle_deg);
+
+q_scale = 50; % Adjust length for visibility
+quiver3(origin(1), origin(2), origin(3), uhat(1), uhat(2), uhat(3), q_scale, 'r', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), vhat(1), vhat(2), vhat(3), q_scale, 'g', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), what(1), what(2), what(3), q_scale, 'b', 'LineWidth', 5, 'MaxHeadSize', 2);
+hold on
+
+plotCurvatureEndpoints(3191, "#919682", E1, E2, E3)
+% Calculate frame based off orthonormal basis vectors
+[uhat, vhat, what, origin] = movement(E1(3191,:), E2(3191,:), E3(3191,:), final_row);
+rotation2 = [uhat'; what'; vhat'];
+translation2 = origin;
+transformation2 = [rotation2, translation2; 0,0,0,1];
+T_rel = inv(transformation2)*transformation1;
+t_rel = T_rel(1:3, 4);
+d1 = norm(t_rel);
+R_rel = T_rel(1:3, 1:3);
+
+% 4. Convert Rotation to human-readable format (e.g., Euler Angles or Axis-Angle)
+axisang = rotm2axang(R_rel); % Axis of rotation and total angle
+angle_deg = rad2deg(axisang(4));
+
+% Display Results
+fprintf('Relative Translation: %.2f\n', d1);
+%fprintf('Relative Euler Angles (deg): [%.2f, %.2f, %.2f] and [%.2f, %.2f, %.2f]\n', euler_rel, euler_rel2);
+fprintf('Total Rotation Angle: %.2f degrees\n', angle_deg);
+
+q_scale = 50; % Adjust length for visibility
+quiver3(origin(1), origin(2), origin(3), uhat(1), uhat(2), uhat(3), q_scale, 'r', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), vhat(1), vhat(2), vhat(3), q_scale, 'g', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), what(1), what(2), what(3), q_scale, 'b', 'LineWidth', 5, 'MaxHeadSize', 2);
+hold on
+
+plotCurvatureEndpoints(4331, "#C7CDBF", E1, E2, E3)
+% Calculate frame based off orthonormal basis vectors
+[uhat, vhat, what, origin] = movement(E1(4331,:), E2(4331,:), E3(4331,:), final_row);
+rotation2 = [uhat'; what'; vhat'];
+translation2 = origin;
+transformation2 = [rotation2, translation2; 0,0,0,1];
+T_rel = inv(transformation2)*transformation1;
+t_rel = T_rel(1:3, 4);
+d1 = norm(t_rel);
+R_rel = T_rel(1:3, 1:3);
+
+% 4. Convert Rotation to human-readable format (e.g., Euler Angles or Axis-Angle)
+axisang = rotm2axang(R_rel); % Axis of rotation and total angle
+angle_deg = rad2deg(axisang(4));
+
+% Display Results
+fprintf('Relative Translation: %.2f\n', d1);
+%fprintf('Relative Euler Angles (deg): [%.2f, %.2f, %.2f] and [%.2f, %.2f, %.2f]\n', euler_rel, euler_rel2);
+fprintf('Total Rotation Angle: %.2f degrees\n', angle_deg);
+
+q_scale = 50; % Adjust length for visibility
+quiver3(origin(1), origin(2), origin(3), uhat(1), uhat(2), uhat(3), q_scale, 'r', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), vhat(1), vhat(2), vhat(3), q_scale, 'g', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), what(1), what(2), what(3), q_scale, 'b', 'LineWidth', 5, 'MaxHeadSize', 2);
+hold on
+
+plotCurvatureEndpoints(5271, "#595E48", E1, E2, E3)
+% Calculate frame based off orthonormal basis vectors
+[uhat, vhat, what, origin] = movement(E1(5271,:), E2(5271,:), E3(5271,:), final_row);
+rotation2 = [uhat'; what'; vhat'];
+translation2 = origin;
+transformation2 = [rotation2, translation2; 0,0,0,1];
+T_rel = inv(transformation2)*transformation1;
+t_rel = T_rel(1:3, 4);
+d1 = norm(t_rel);
+R_rel = T_rel(1:3, 1:3);
+
+% 4. Convert Rotation to human-readable format (e.g., Euler Angles or Axis-Angle)
+axisang = rotm2axang(R_rel); % Axis of rotation and total angle
+angle_deg = rad2deg(axisang(4));
+
+% Display Results
+fprintf('Relative Translation: %.2f\n', d1);
+%fprintf('Relative Euler Angles (deg): [%.2f, %.2f, %.2f] and [%.2f, %.2f, %.2f]\n', euler_rel, euler_rel2);
+fprintf('Total Rotation Angle: %.2f degrees\n', angle_deg);
+
+q_scale = 50; % Adjust length for visibility
+quiver3(origin(1), origin(2), origin(3), uhat(1), uhat(2), uhat(3), q_scale, 'r', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), vhat(1), vhat(2), vhat(3), q_scale, 'g', 'LineWidth', 5, 'MaxHeadSize', 2);
+quiver3(origin(1), origin(2), origin(3), what(1), what(2), what(3), q_scale, 'b', 'LineWidth', 5, 'MaxHeadSize', 2);
+hold on
+% legend('Motor 1', 'Motor 2', 'Motor 3', 'Motors 1 + 3', 'Motors 1 + 2', 'Motors 2 + 3')
+
 % Plot different gaits within movement
 % Manually set time that different gaits occur in a movement sequence
 figure(3)
-t = tiledlayout(2,2);
-
-for i = [1, 250, 700, 1080]
-    nexttile;
-    % For module 1 since we have all points, we have to end at the starting node (1)
-    EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
-    fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
-    hold on
-    MidpointsMod1 = [M1(i,:); M2(i,:); M3(i,:); M1(i,:)];
-    fill3(MidpointsMod1(:,1),MidpointsMod1(:,2),MidpointsMod1(:,3), 'c-o')
-    hold on
-    InnerpointsMod1 = [I1(i,:); I2(i,:); I3(i,:); I1(i,:)];
-    fill3(InnerpointsMod1(:,1),InnerpointsMod1(:,2),InnerpointsMod1(:,3), 'm-o')
-    hold on
-
-    % For module 2 since we have all points, we have to end at the starting node (4)
-    EndpointsMod2 = [E4(i,:); E5(i,:); E6(i,:); E4(i,:)];
-    fill3(EndpointsMod2(:,1),EndpointsMod2(:,2),EndpointsMod2(:,3), 'b-o')
-    hold on
-    MidpointsMod2 = [M4(i,:); M5(i,:); M6(i,:); M4(i,:)];
-    fill3(MidpointsMod2(:,1),MidpointsMod2(:,2),MidpointsMod2(:,3), 'r-o')
-    hold on
-    InnerpointsMod2 = [I4(i,:); I5(i,:); I6(i,:); I4(i,:)];
-    fill3(InnerpointsMod2(:,1),InnerpointsMod2(:,2),InnerpointsMod2(:,3), 'y-o')
-    hold on
-
-    % Tendons 1 - 6 since we're missing node 1 points
-    Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
-    plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-    plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-    plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
-    plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
-    plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
-    plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    if i == 1
-        title('Base State');
-    elseif i == 250 || i == 700
-        title('State 1');
-    else
-        title('State 2');
-    end
-end
-title(t, 'Undulation Gait');
+plotCurvatureFinal(351, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(1261, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(2401, "#997B66", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(3191, "#919682", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(4331, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(5271, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
 
 
 % Track two endpoints throughout gait movement
 % Manually set time that different gaits occur in a movement sequence
-figure(3)
+figure(4)
 for i = [1, final_row] % Plot starting and ending full robot configurations
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
@@ -240,7 +355,7 @@ title(t, 'Full Inchworm Gait Tracked');
 
 
 % Figuring out reference frame stuff
-figure(4)
+figure(5)
 for i = [1, 200, 201, 480, 481, 670, 671, 900, 901, 1120, 1121, 1320, 1321, 1460, 1461, 1720, 1721, 1950, 1951, 2150, 2151, 2340, 2341, 2580, 2581, 2730, 2731, 2930, 2931, 3080, 3081, 3320, 3321, 3520, 3521, 3720, 3721, 3860, 3861, 4070, 4071, 4310, 4311, 4520, 4521, 4700, 4701, 4890] % Plot starting and ending full robot configurations
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
@@ -566,4 +681,29 @@ function plotCurvatureFinal(i, color, E1, E2, E3, M1, M2, M3, I1, I2, I3)
         axis image
         
 
+end
+
+function plotCurvatureEndpoints(i, color, E1, E2, E3)
+        % nexttile
+        % For module 1 since we have all points, we have to end at the starting node (1)
+        [centerE1, radiusE1, xE1, yE1, zE1] = triangle2circle(E1(i,:), E2(i,:), E3(i,:));
+        hold on
+
+        % Cute colors
+        plotDisk(xE1, yE1, zE1, hex2rgb(color))
+    
+        % % Tendons 1 - 6 since we're missing node 1 points
+        % Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+        % plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        % hold on
+        % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+        % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        % hold on
+        % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+        % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        % hold on
+        
+        title("Maximum Curvature Depending on Motor Movement");
+        view(90,0);
+        axis image
 end
