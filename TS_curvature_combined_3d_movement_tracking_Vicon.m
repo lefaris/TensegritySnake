@@ -22,7 +22,21 @@
 % Motor 1 + 3 is rows 3914 - 4865
 % Motor 2 + 3 is rows 4867 - 6027
 M = readmatrix('curvature_combined.csv','Range','C6:AO6027');
-final_row = 4908;
+final_row = 6017;
+
+% Set start/stop time for different curvature runs
+Motor1Start = 1;
+Motor1End = 901; %905
+Motor2Start = 921;
+Motor2End = 1761;
+Motor3Start = 1781;
+Motor3End = 2771;
+Motor1and2Start = 2781;
+Motor1and2End = 3901;
+Motor1and3Start = 3911;
+Motor1and3End = 4851;
+Motor2and3Start = 4861;
+Motor2and3End = 6011;
 
 % Set last row that each node contains Vicon data
 lastE1 = final_row;
@@ -32,37 +46,38 @@ lastE4 = final_row;
 lastE5 = final_row;
 lastE6 = final_row;
 
-% % Generate video info
-% video_title = "C_tracking.mp4"; %Update with descriptive title and make sure not to overwrite previous video
-% v = VideoWriter(video_title, "MPEG-4");
-% v.FrameRate = 15; %Set video frame rate
-% open(v);
-% run_video = 1;
-run_video = 0;
+% Generate video info
+video_title = "curvature_tracking.avi"; %Update with descriptive title and make sure not to overwrite previous video
+v = VideoWriter(video_title, "Uncompressed AVI");
+v.FrameRate = 15; %Set video frame rate
+open(v);
+run_video = 1;
+% run_video = 0;
 
 % Gather all motor endpoints
 E1 = M(1:final_row, 1:3);
-E2 = M(1:final_row, 10:12);
-E3 = M(1:final_row, 19:21);
-E4 = M(1:final_row, 28:30);
-E5 = M(1:final_row, 37:39);
-E6 = M(1:final_row, 46:48);
+E2 = M(1:final_row, 13:15);
+E3 = M(1:final_row, 25:27);
+
+% Gather all ???
+V1 = M(1:final_row, 4:6);
+V2 = M(1:final_row, 16:18);
+V3 = M(1:final_row, 28:30);
 
 % Gather all midpoints
-M1 = M(1:final_row, 4:6);
-M2 = M(1:final_row, 13:15);
-M3 = M(1:final_row, 22:24);
-M4 = M(1:final_row, 31:33);
-M5 = M(1:final_row, 40:42);
-M6 = M(1:final_row, 49:51);
+M1 = M(1:final_row, 7:9);
+M2 = M(1:final_row, 19:21);
+M3 = M(1:final_row, 31:33);
+
 
 % Gather all inner points
-I1 = M(1:final_row, 7:9);
-I2 = M(1:final_row, 16:18);
-I3 = M(1:final_row, 25:27);
-I4 = M(1:final_row, 34:36);
-I5 = M(1:final_row, 43:45);
-I6 = M(1:final_row, 52:54);
+I1 = M(1:final_row, 10:12);
+I2 = M(1:final_row, 22:24);
+I3 = M(1:final_row, 34:36);
+
+% Top stationary plane?
+Plane = M(1:final_row, 37:39);
+
 
 % Initialize tracking variables for plotting purposes
 EndpointsMod1Tracking = zeros(1, 3, final_row);
@@ -70,81 +85,41 @@ EndpointsMod2Tracking = zeros(1, 3, final_row);
 EndpointsMod1TrackingColor = zeros(1, final_row);
 EndpointsMod2TrackingColor = zeros(1, final_row);
 
-% Plot overall distance + path traveled
-for i = 1:10:final_row
-    % For module 1 since we have all points, we have to end at the starting node (1)
-    EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
-    fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
-    hold on
-    MidpointsMod1 = [M1(i,:); M2(i,:); M3(i,:); M1(i,:)];
-    fill3(MidpointsMod1(:,1),MidpointsMod1(:,2),MidpointsMod1(:,3), 'c-o')
-    hold on
-    InnerpointsMod1 = [I1(i,:); I2(i,:); I3(i,:); I1(i,:)];
-    fill3(InnerpointsMod1(:,1),InnerpointsMod1(:,2),InnerpointsMod1(:,3), 'm-o')
-    hold on
 
-    % For module 2 since we have all points, we have to end at the starting node (4)
-    EndpointsMod2 = [E4(i,:); E5(i,:); E6(i,:); E4(i,:)];
-    fill3(EndpointsMod2(:,1),EndpointsMod2(:,2),EndpointsMod2(:,3), 'b-o')
-    hold on
-    MidpointsMod2 = [M4(i,:); M5(i,:); M6(i,:); M4(i,:)];
-    fill3(MidpointsMod2(:,1),MidpointsMod2(:,2),MidpointsMod2(:,3), 'r-o')
-    hold on
-    InnerpointsMod2 = [I4(i,:); I5(i,:); I6(i,:); I4(i,:)];
-    fill3(InnerpointsMod2(:,1),InnerpointsMod2(:,2),InnerpointsMod2(:,3), 'y-o')
-    hold on
+% Cute colors
+% ("#C7A491")
+% ("#EECFCA")
+% ("#997B66")
+% ("#919682")
+% ("#C7CDBF")
+% ("#595E48")
 
-    % Tendons 1 - 6 since we're missing node 1 points
-    Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
-    plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-    plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-    plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
-    plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
-    plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-    Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
-    plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-    hold on
-
-    EndpointsMod1Tracking(:,:,i) = (E1(i,:) + E2(i,:) + E3(i,:))/3;
-    EndpointsMod2Tracking(:,:,i) = (E4(i,:) + E5(i,:) + E6(i,:))/3;
-
-    EndpointsMod1TrackingColor(i) = 0 + (i/final_row);
-    EndpointsMod2TrackingColor(i) = 0 + (i/final_row);
-
-    for j = 1:10:i
-        plot3(EndpointsMod1Tracking(:,1,j), EndpointsMod1Tracking(:,2,j), EndpointsMod1Tracking(:,3,j), 'x', 'Color', [0 0 EndpointsMod1TrackingColor(j)], 'MarkerSize', 15, 'LineWidth', 3)
-        hold on
-        plot3(EndpointsMod2Tracking(:,1,j), EndpointsMod2Tracking(:,2,j), EndpointsMod2Tracking(:,3,j), 'x', 'Color', [EndpointsMod2TrackingColor(j) 0 0], 'MarkerSize', 15, 'LineWidth', 3)
-        hold on 
-    end
-
-
-    title("Timestep ", i);
-    % Write video frame
-    if run_video == 1
-        frame = getframe(gcf);
-        writeVideo(v,frame)
-        hold off
-    end
-end
+% Plot overall distance + path traveled for each of the 6 curvatures
+plotCurvature(v, run_video, Motor1Start, Motor1End, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvature(v, run_video, Motor2Start, Motor2End, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvature(v, run_video, Motor3Start, Motor3End, "#997B66", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvature(v, run_video, Motor1and2Start, Motor1and2End, "#919682", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvature(v, run_video, Motor1and3Start, Motor1and3End, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvature(v, run_video, Motor2and3Start, Motor2and3End, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
 
 if run_video == 1
     close(v)
 end
 
+% Plot end position
+figure(2)
+tiledlayout(3,2);
+plotCurvatureFinal(351, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(1261, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(2401, "#997B66", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(3191, "#919682", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(4331, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureFinal(5271, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+
 
 % Plot different gaits within movement
 % Manually set time that different gaits occur in a movement sequence
-figure(2)
+figure(3)
 t = tiledlayout(2,2);
 
 for i = [1, 250, 700, 1080]
@@ -481,4 +456,114 @@ function [uhat, vhat, what, origin] = movement(E1, E2, E3, final_row)
 
     % Calculate the third basis vector using the cross product
     what = cross(uhat, vhat);
+end
+
+
+% Specify circle vectors
+function [center, radius, x, y, z] = triangle2circle(P1, P2, P3)
+    % Describe the edges of the triangle by defining two vectors from P1
+    u = P2 - P1;
+    v = P3 - P1;
+
+    % Define normal vector (orientation in 3D)
+    norm_temp = cross(u,v);
+    normal = norm_temp / norm(norm_temp);
+
+    % Set up linear set of equations based off three points and solve it to
+    % generate the circle center, then use that to calculate the radius
+    A = [2*u; 2*v; normal];
+    b = [dot(P2, P2) - dot(P1, P1); dot(P3, P3) - dot(P1, P1); dot(normal, P1)];
+    center = (A \ b)'; % Solve the linear system
+    radius = norm(center - P1);
+
+    % 6 variables to parameterize 3D circle
+    phi = atan2(normal(2),normal(1)); % azimuth angle, in [-pi, pi]
+    theta = atan2(sqrt(normal(1)^2 + normal(2)^2), normal(3)); % zenith angle, in [0,pi]    
+    t = 0:pi/32:2*pi;
+    x = center(1) - radius*( cos(t)*sin(phi) + sin(t)*cos(theta)*cos(phi) );
+    y = center(2) + radius*( cos(t)*cos(phi) - sin(t)*cos(theta)*sin(phi) );
+    z = center(3) + radius*sin(t)*sin(theta);
+    % plot3(x,y,z,'r')
+    % patch(x,y,z,'r')
+    % hold on
+end
+
+function plotDisk(x, y, z, color)
+    plot3(x,y,z, 'Color', color)
+    patch(x,y,z, color)
+    hold on
+end
+
+function plotCurvature(v, run_video, start, stop, color, E1, E2, E3, M1, M2, M3, I1, I2, I3)
+    % Plot overall distance + path traveled
+    for i = start:100:stop
+        % For module 1 since we have all points, we have to end at the starting node (1)
+        [centerE1, radiusE1, xE1, yE1, zE1] = triangle2circle(E1(i,:), E2(i,:), E3(i,:));
+        %hold on
+        [centerM1, radiusM1, xM1, yM1, zM1] = triangle2circle(M1(i,:), M2(i,:), M3(i,:));
+        %hold on
+        [centerI1, radiusI1, xI1, yI1, zI1] = triangle2circle(I1(i,:), I2(i,:), I3(i,:));
+        %hold on
+
+        % Cute colors
+        plotDisk(xE1, yE1, zE1, hex2rgb(color))
+        plotDisk(xM1, yM1, zM1, hex2rgb(color))
+        plotDisk(xI1, yI1, zI1, hex2rgb(color))
+    
+        % Tendons 1 - 6 since we're missing node 1 points
+        Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+        plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        %hold on
+        Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+        plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        %hold on
+        Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+        plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        %hold on
+        if i == stop
+            hold on
+        end
+        
+        title("Timestep ", i);
+        % Write video frame
+        if run_video == 1
+            view(45,0);
+            frame = getframe(gcf);
+            writeVideo(v,frame)
+            hold off
+        end
+    end
+end
+
+function plotCurvatureFinal(i, color, E1, E2, E3, M1, M2, M3, I1, I2, I3)
+        nexttile
+        % For module 1 since we have all points, we have to end at the starting node (1)
+        [centerE1, radiusE1, xE1, yE1, zE1] = triangle2circle(E1(i,:), E2(i,:), E3(i,:));
+        hold on
+        [centerM1, radiusM1, xM1, yM1, zM1] = triangle2circle(M1(i,:), M2(i,:), M3(i,:));
+        hold on
+        [centerI1, radiusI1, xI1, yI1, zI1] = triangle2circle(I1(i,:), I2(i,:), I3(i,:));
+        hold on
+
+        % Cute colors
+        plotDisk(xE1, yE1, zE1, hex2rgb(color))
+        plotDisk(xM1, yM1, zM1, hex2rgb(color))
+        plotDisk(xI1, yI1, zI1, hex2rgb(color))
+    
+        % Tendons 1 - 6 since we're missing node 1 points
+        Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+        plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        hold on
+        Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+        plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        hold on
+        Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+        plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        hold on
+        
+        title("Maximum Curvature Depending on Motor Movement");
+        view(90,0);
+        axis image
+        
+
 end
