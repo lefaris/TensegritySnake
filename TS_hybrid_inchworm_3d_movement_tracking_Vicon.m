@@ -33,28 +33,28 @@ lastE6 = final_row;
 run_video = 0;
 
 % Gather all motor endpoints
-E1 = M(1:final_row, 49:51);
-E2 = M(1:final_row, 1:3);
-E3 = M(1:final_row, 10:12);
+E1 = M(1:final_row, 1:3);
+E2 = M(1:final_row, 10:12);
+E3 = M(1:final_row, 19:21);
 E4 = M(1:final_row, 28:30);
-E5 = M(1:final_row, 19:21);
-E6 = M(1:final_row, 37:39);
+E5 = M(1:final_row, 37:39);
+E6 = M(1:final_row, 46:48);
 
 % Gather all midpoints
-M1 = M(1:final_row, 52:54);
-M2 = M(1:final_row, 4:6);
-M3 = M(1:final_row, 13:15);
+M1 = M(1:final_row, 4:6);
+M2 = M(1:final_row, 13:15);
+M3 = M(1:final_row, 22:24);
 M4 = M(1:final_row, 31:33);
-M5 = M(1:final_row, 22:24);
-M6 = M(1:final_row, 40:42);
+M5 = M(1:final_row, 40:42);
+M6 = M(1:final_row, 49:51);
 
 % Gather all inner points
-I1 = M(1:final_row, 55:57);
-I2 = M(1:final_row, 7:9);
-I3 = M(1:final_row, 16:18);
+I1 = M(1:final_row, 7:9);
+I2 = M(1:final_row, 16:18);
+I3 = M(1:final_row, 25:27);
 I4 = M(1:final_row, 34:36);
-I5 = M(1:final_row, 25:27);
-I6 = M(1:final_row, 43:45);
+I5 = M(1:final_row, 43:45);
+I6 = M(1:final_row, 52:54);
 
 % Initialize tracking variables for plotting purposes
 EndpointsMod1Tracking = zeros(1, 3, final_row);

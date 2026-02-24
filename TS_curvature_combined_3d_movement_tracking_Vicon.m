@@ -106,15 +106,24 @@ EndpointsMod2TrackingColor = zeros(1, final_row);
 %     close(v)
 % end
 
-% Plot end position
-% % figure(2)
-tiledlayout(3,2);
-plotCurvatureFinal(351, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvatureFinal(1261, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvatureFinal(2401, "#997B66", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvatureFinal(3191, "#919682", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvatureFinal(4331, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
-plotCurvatureFinal(5271, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% % Plot end position
+% % % figure(2)
+% tiledlayout(3,2);
+% plotCurvatureFinal(351, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvatureFinal(1261, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvatureFinal(2401, "#997B66", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvatureFinal(3191, "#919682", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvatureFinal(4331, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+% plotCurvatureFinal(5271, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+
+
+
+plotCurvatureLine(351, "#C7A491", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureLine(1261, "#EECFCA", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureLine(2401, "#997B66", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureLine(3191, "#919682", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureLine(4331, "#C7CDBF", E1, E2, E3, M1, M2, M3, I1, I2, I3)
+plotCurvatureLine(5271, "#595E48", E1, E2, E3, M1, M2, M3, I1, I2, I3)
 
 
 figure(2)
@@ -682,6 +691,47 @@ function plotCurvatureFinal(i, color, E1, E2, E3, M1, M2, M3, I1, I2, I3)
         
 
 end
+
+
+
+
+function plotCurvatureLine(i, color, E1, E2, E3, M1, M2, M3, I1, I2, I3)
+        % For module 1 since we have all points, we have to end at the starting node (1)
+        [centerE1, radiusE1, xE1, yE1, zE1] = triangle2circle(E1(i,:), E2(i,:), E3(i,:));
+        hold on
+        [centerM1, radiusM1, xM1, yM1, zM1] = triangle2circle(M1(i,:), M2(i,:), M3(i,:));
+        hold on
+        [centerI1, radiusI1, xI1, yI1, zI1] = triangle2circle(I1(i,:), I2(i,:), I3(i,:));
+        hold on
+
+        % % Cute colors
+        % plotDisk(xE1, yE1, zE1, hex2rgb(color))
+        % plotDisk(xM1, yM1, zM1, hex2rgb(color))
+        % plotDisk(xI1, yI1, zI1, hex2rgb(color))
+
+        % Plot only dots for face centers
+        plot3(centerE1(1), centerE1(2), centerE1(3), '-o', 'Color', 'k', 'MarkerSize', 20, 'MarkerFaceColor',hex2rgb(color))
+        plot3(centerM1(1), centerM1(2), centerM1(3), '-o', 'Color', 'k', 'MarkerSize', 20, 'MarkerFaceColor',hex2rgb(color))
+        plot3(centerI1(1), centerI1(2), centerI1(3), '-o', 'Color', 'k', 'MarkerSize', 20, 'MarkerFaceColor',hex2rgb(color))
+    
+        % Tendons 1 - 6 since we're missing node 1 points
+        Tendon1 = [centerE1; centerM1; centerI1];
+        plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        hold on
+        % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+        % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        % hold on
+        % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+        % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        % hold on
+        
+        title("Maximum Curvature Depending on Motor Movement");
+        view(90,0);
+        axis image
+end
+
+
+
 
 function plotCurvatureEndpoints(i, color, E1, E2, E3)
         % nexttile
