@@ -13,7 +13,7 @@
 % modules.  From this, plot movement of tensegrity snake through sequence.
 % Also return distance information for each outer node.
 
-M = readmatrix('c CURVE.xlsx','Range','C6:BD4913');
+M = readmatrix('C.csv','Range','C6:BD4913');
 final_row = 4908;
 
 % Set last row that each node contains Vicon data
@@ -512,7 +512,11 @@ end
 %     hold on
 % end
 %view(0,0)
-title('Starting and Ending Robot Hybrid Sidewinding Positions')
+ax = gca;
+grid on
+ax.GridAlpha = 0.3;
+ax.GridLineWidth = 2;
+% title('Starting and Ending Robot Hybrid Sidewinding Positions')
 
 
 % Figuring out reference frame stuff

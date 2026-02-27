@@ -500,7 +500,11 @@ for i = [1, final_row] % Plot starting and ending full robot configurations
     % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     % hold on
 end
-title('Starting and Ending Robot Positions with Missing Tendons')
+ax = gca;
+grid on
+ax.GridAlpha = 0.3;
+ax.GridLineWidth = 2;
+%title('Starting and Ending Robot Positions with Missing Tendons')
 % for i = 1:3:final_row
 %     EndpointsMod1Tracking = (E1(i,:) + E2(i,:) + E3(i,:))/3;
 %     EndpointsMod2Tracking = (E4(i,:) + E5(i,:) + E6(i,:))/3;

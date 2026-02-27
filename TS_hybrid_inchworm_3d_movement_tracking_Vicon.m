@@ -355,7 +355,7 @@ title(t, 'Undulation Gait');
 % Track two endpoints throughout gait movement
 % Manually set time that different gaits occur in a movement sequence
 figure(5)
-for i = [1, 3491] % Plot starting and ending full robot configurations
+for i = [201, 2900] % Plot starting and ending full robot configurations
     % Calculate disk face for each of the six icosahedrons
     [centerE1, radiusE1, xE1, yE1, zE1] = triangle2circle(E1(i,:), E2(i,:), E3(i,:));
     [centerM1, radiusM1, xM1, yM1, zM1] = triangle2circle(M1(i,:), M2(i,:), M3(i,:));
@@ -499,7 +499,11 @@ for i = [1, 3491] % Plot starting and ending full robot configurations
     % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     % hold on
 end
-title('Starting and Ending Robot Hybrid Inchworm Positions')
+ax = gca;
+grid on
+ax.GridAlpha = 0.3;
+ax.GridLineWidth = 2;
+% title('Starting and Ending Robot Hybrid Inchworm Positions')
 % for i = 1:3:final_row
 %     EndpointsMod1Tracking = (E1(i,:) + E2(i,:) + E3(i,:))/3;
 %     EndpointsMod2Tracking = (E4(i,:) + E5(i,:) + E6(i,:))/3;

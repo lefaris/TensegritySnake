@@ -504,8 +504,12 @@ for i = [1, 3666] % Plot starting and ending full robot configurations
     % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     % hold on
 end
-legend('1st End', '1st Mid', '1st Inner', '2nd End', '2nd Mid', '2nd Inner')
-title('Starting and Ending Robot Inchworm Positions')
+ax = gca;
+grid on
+ax.GridAlpha = 0.3;
+ax.GridLineWidth = 2;
+%legend('1st End', '1st Mid', '1st Inner', '2nd End', '2nd Mid', '2nd Inner')
+%title('Starting and Ending Robot Inchworm Positions')
 
 % for i = 1:3:3780
 %     EndpointsMod1Tracking = (E1(i,:) + E2(i,:) + E3(i,:))/3;
