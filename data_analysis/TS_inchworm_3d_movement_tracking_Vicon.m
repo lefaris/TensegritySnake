@@ -13,20 +13,20 @@
 % modules.  From this, plot movement of tensegrity snake through sequence.
 % Also return distance information for each outer node.
 
-M = readmatrix('MovementMissingTendon3AND6.csv','Range','C6:BD3878');
-final_row = 3870;
+M = readmatrix('iNCHWORM - FULL RESULTS .csv','Range','C6:BD3785');
+final_row = 3780;
 
 % Set last row that each node contains Vicon data
 lastE1 = final_row;
 lastE2 = final_row;
 lastE3 = final_row;
 lastE4 = final_row;
-lastE5 = final_row;
+lastE5 = 1255;
 lastE6 = final_row;
 
 % % Generate video info
-% video_title = "missing_tendons_tracking.mp4"; %Update with descriptive title and make sure not to overwrite previous video
-% v = VideoWriter(video_title, "Uncompressed AVI");
+% video_title = "full_inchworm_every_frame.mp4"; %Update with descriptive title and make sure not to overwrite previous video
+% v = VideoWriter(video_title, "MPEG-4");
 % v.FrameRate = 15; %Set video frame rate
 % open(v);
 % run_video = 1;
@@ -62,79 +62,83 @@ EndpointsMod2Tracking = zeros(1, 3, final_row);
 EndpointsMod1TrackingColor = zeros(1, final_row);
 EndpointsMod2TrackingColor = zeros(1, final_row);
 
-% % Plot overall distance + path traveled
-% for i = 1:10:final_row
-%     % For module 1 since we have all points, we have to end at the starting node (1)
-%     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
-%     fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
-%     hold on
-%     MidpointsMod1 = [M1(i,:); M2(i,:); M3(i,:); M1(i,:)];
-%     fill3(MidpointsMod1(:,1),MidpointsMod1(:,2),MidpointsMod1(:,3), 'c-o')
-%     hold on
-%     InnerpointsMod1 = [I1(i,:); I2(i,:); I3(i,:); I1(i,:)];
-%     fill3(InnerpointsMod1(:,1),InnerpointsMod1(:,2),InnerpointsMod1(:,3), 'm-o')
-%     hold on
-% 
-%     % For module 2 since we have all points, we have to end at the starting node (4)
-%     EndpointsMod2 = [E4(i,:); E5(i,:); E6(i,:); E4(i,:)];
-%     fill3(EndpointsMod2(:,1),EndpointsMod2(:,2),EndpointsMod2(:,3), 'b-o')
-%     hold on
-%     MidpointsMod2 = [M4(i,:); M5(i,:); M6(i,:); M4(i,:)];
-%     fill3(MidpointsMod2(:,1),MidpointsMod2(:,2),MidpointsMod2(:,3), 'r-o')
-%     hold on
-%     InnerpointsMod2 = [I4(i,:); I5(i,:); I6(i,:); I4(i,:)];
-%     fill3(InnerpointsMod2(:,1),InnerpointsMod2(:,2),InnerpointsMod2(:,3), 'y-o')
-%     hold on
-% 
-%     % Tendons 1 - 6 since we're missing node 1 points
-%     Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
-%     plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-%     plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-%     plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
-%     plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
-%     plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
-%     plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-% 
-%     EndpointsMod1Tracking(:,:,i) = (E1(i,:) + E2(i,:) + E3(i,:))/3;
-%     EndpointsMod2Tracking(:,:,i) = (E4(i,:) + E5(i,:) + E6(i,:))/3;
-% 
-%     EndpointsMod1TrackingColor(i) = 0 + (i/final_row);
-%     EndpointsMod2TrackingColor(i) = 0 + (i/final_row);
-% 
-%     % for j = 1:10:i
-%     %     plot3(EndpointsMod1Tracking(:,1,j), EndpointsMod1Tracking(:,2,j), EndpointsMod1Tracking(:,3,j), 'x', 'Color', [0 0 EndpointsMod1TrackingColor(j)], 'MarkerSize', 15, 'LineWidth', 3)
-%     %     hold on
-%     %     plot3(EndpointsMod2Tracking(:,1,j), EndpointsMod2Tracking(:,2,j), EndpointsMod2Tracking(:,3,j), 'x', 'Color', [EndpointsMod2TrackingColor(j) 0 0], 'MarkerSize', 15, 'LineWidth', 3)
-%     %     hold on 
-%     % end
-% 
-% 
-%     title("Timestep ", i);
-%     % Write video frame
-%     if run_video == 1
-%         frame = getframe(gcf);
-%         writeVideo(v,frame)
-%         hold off
-%     end
-% end
-% 
-% if run_video == 1
-%     close(v)
-% end
+% Identify different gaits in run
 
 
-% figure(2)
+% Plot overall distance + path traveled
+for i = 1:100:final_row
+    % For module 1 since we have all points, we have to end at the starting node (1)
+    EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
+    fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
+    hold on
+    MidpointsMod1 = [M1(i,:); M2(i,:); M3(i,:); M1(i,:)];
+    fill3(MidpointsMod1(:,1),MidpointsMod1(:,2),MidpointsMod1(:,3), 'c-o')
+    hold on
+    InnerpointsMod1 = [I1(i,:); I2(i,:); I3(i,:); I1(i,:)];
+    fill3(InnerpointsMod1(:,1),InnerpointsMod1(:,2),InnerpointsMod1(:,3), 'm-o')
+    hold on
+
+    % For module 2 since we have all points, we have to end at the starting node (4)
+    EndpointsMod2 = [E4(i,:); E5(i,:); E6(i,:); E4(i,:)];
+    fill3(EndpointsMod2(:,1),EndpointsMod2(:,2),EndpointsMod2(:,3), 'b-o')
+    hold on
+    MidpointsMod2 = [M4(i,:); M5(i,:); M6(i,:); M4(i,:)];
+    fill3(MidpointsMod2(:,1),MidpointsMod2(:,2),MidpointsMod2(:,3), 'r-o')
+    hold on
+    InnerpointsMod2 = [I4(i,:); I5(i,:); I6(i,:); I4(i,:)];
+    fill3(InnerpointsMod2(:,1),InnerpointsMod2(:,2),InnerpointsMod2(:,3), 'y-o')
+    hold on
+
+    % Tendons 1 - 6 since we're missing node 1 points
+    Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+    plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+    plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+    plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
+    plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
+    plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
+    plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+
+    EndpointsMod1Tracking(:,:,i) = (E1(i,:) + E2(i,:) + E3(i,:))/3;
+    EndpointsMod2Tracking(:,:,i) = (E4(i,:) + E5(i,:) + E6(i,:))/3;
+
+    EndpointsMod1TrackingColor(i) = 0 + (i/final_row);
+    EndpointsMod2TrackingColor(i) = 0 + (i/final_row);
+
+    % Commenting the 'x' endpoint visualization for now for faster code execution
+    % for j = 1:10:i
+    %     plot3(EndpointsMod1Tracking(:,1,j), EndpointsMod1Tracking(:,2,j), EndpointsMod1Tracking(:,3,j), 'x', 'Color', [0 0 EndpointsMod1TrackingColor(j)], 'MarkerSize', 15, 'LineWidth', 3)
+    %     hold on
+    %     plot3(EndpointsMod2Tracking(:,1,j), EndpointsMod2Tracking(:,2,j), EndpointsMod2Tracking(:,3,j), 'x', 'Color', [EndpointsMod2TrackingColor(j) 0 0], 'MarkerSize', 15, 'LineWidth', 3)
+    %     hold on 
+    % end
+
+
+    title("Timestep ", i);
+    % Write video frame
+    if run_video == 1
+        frame = getframe(gcf);
+        writeVideo(v,frame)
+        hold off
+    end
+end
+
+if run_video == 1
+    close(v)
+end
+
+
+figure(2)
 for i = 1:10:final_row
     % Time data
     y(i) = i;
@@ -158,24 +162,24 @@ for i = 1:10:final_row
     [centerI2, radiusI2, xI2, yI2, zI2] = triangle2circle(I4(i,:), I5(i,:), I6(i,:));
     I2Diameter(i) = radiusI2*2;
 
-    % if E1Diameter(i) > 300
-    %     E1Diameter(i) = 0; % Set noisy points to 0
-    % end
-    % if E2Diameter(i) > 300
-    %     E2Diameter(i) = 0; % Set noisy points to 0
-    % end
-    % if M1Diameter(i) > 300
-    %     M1Diameter(i) = 0; % Set noisy points to 0
-    % end
-    % if I1Diameter(i) > 300
-    %     I1Diameter(i) = 0; % Set noisy points to 0
-    % end
-    % if M2Diameter(i) > 300
-    %     M2Diameter(i) = 0; % Set noisy points to 0
-    % end
-    % if I2Diameter(i) > 300
-    %     I2Diameter(i) = 0; % Set noisy points to 0
-    % end
+    if E1Diameter(i) > 300
+        E1Diameter(i) = 0; % Set noisy points to 0
+    end
+    if E2Diameter(i) > 300
+        E2Diameter(i) = 0; % Set noisy points to 0
+    end
+    if M1Diameter(i) > 300
+        M1Diameter(i) = 0; % Set noisy points to 0
+    end
+    if I1Diameter(i) > 300
+        I1Diameter(i) = 0; % Set noisy points to 0
+    end
+    if M2Diameter(i) > 300
+        M2Diameter(i) = 0; % Set noisy points to 0
+    end
+    if I2Diameter(i) > 300
+        I2Diameter(i) = 0; % Set noisy points to 0
+    end
     
 end
 
@@ -202,161 +206,160 @@ xlim([175 300])
 legend({'1st End', '1st Mid', '1st Inner', '2nd End', '2nd Mid', '2nd Inner'},'FontSize',20)
 xlabel('Diameter (mm)', 'FontSize', 20)
 ylabel('Timesteps', 'FontSize', 20)
-title('Face Diameter Change with Two Tendon Failures', 'FontSize',20)
+title('Face Diameter Change Across Inchworm Gaits', 'FontSize',20)
 
 
 
-% figure(3)
-% % for i = 1:100:final_row
-% for i = final_row
-%     % Calculate disk face for each of the six icosahedrons
-%     % plotDisk(xE1, yE1, zE1, "#C7A491")
-%     % plotDisk(xM1, yM1, zM1, "#EECFCA")
-%     % plotDisk(xI1, yI1, zI1, "#5C4033")
-%     % plotDisk(xE2, yE2, zE2, "#919682")
-%     % plotDisk(xM2, yM2, zM2, "#C7CDBF")
-%     % plotDisk(xI2, yI2, zI2, "#595E48")
-% 
-%     % Cute colors
-%     plotDisk(xE1, yE1, zE1, hex2rgb("#C7A491"))
-%     plotDisk(xM1, yM1, zM1, hex2rgb("#EECFCA"))
-%     plotDisk(xI1, yI1, zI1, hex2rgb("#997B66"))
-%     plotDisk(xE2, yE2, zE2, hex2rgb("#919682"))
-%     plotDisk(xM2, yM2, zM2, hex2rgb("#C7CDBF"))
-%     plotDisk(xI2, yI2, zI2, hex2rgb("#595E48"))
-% 
-%     % % White only
-%     % plotDisk(xE1, yE1, zE1, 'w')
-%     % plotDisk(xM1, yM1, zM1, 'w')
-%     % plotDisk(xI1, yI1, zI1, 'w')
-%     % plotDisk(xE2, yE2, zE2, 'w')
-%     % plotDisk(xM2, yM2, zM2, 'w')
-%     % plotDisk(xI2, yI2, zI2, 'w')
-%     % % Tendons 1 - 6 since we're missing node 1 points
-%     % Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
-%     % plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     % hold on
-%     % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-%     % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     % hold on
-%     % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-%     % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     % hold on
-%     % Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
-%     % plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     % hold on
-%     % Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
-%     % plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     % hold on
-%     % Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
-%     % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     % hold on
-% 
-%     % Cute colors
-%     Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
-%     plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
-%     hold on
-%     Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-%     plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
-%     hold on
-%     Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-%     plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
-%     hold on
-%     Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
-%     plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
-%     hold on
-%     Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
-%     plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
-%     hold on
-%     Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
-%     plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
-%     hold on
-% 
-%     % Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
-%     % plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
-%     % hold on
-%     % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-%     % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
-%     % hold on
-%     % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-%     % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
-%     % hold on
-%     % Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
-%     % plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
-%     % hold on
-%     % Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
-%     % plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
-%     % hold on
-%     % Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
-%     % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
-%     % hold on
-% end
-% 
-% 
-% 
-% % Plot different gaits within movement
-% % Manually set time that different gaits occur in a movement sequence
-% figure(4)
-% t = tiledlayout(2,2);
-% 
-% for i = [1, 250, 700, 1080]
-%     nexttile;
-%     % For module 1 since we have all points, we have to end at the starting node (1)
-%     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
-%     fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
-%     hold on
-%     MidpointsMod1 = [M1(i,:); M2(i,:); M3(i,:); M1(i,:)];
-%     fill3(MidpointsMod1(:,1),MidpointsMod1(:,2),MidpointsMod1(:,3), 'c-o')
-%     hold on
-%     InnerpointsMod1 = [I1(i,:); I2(i,:); I3(i,:); I1(i,:)];
-%     fill3(InnerpointsMod1(:,1),InnerpointsMod1(:,2),InnerpointsMod1(:,3), 'm-o')
-%     hold on
-% 
-%     % For module 2 since we have all points, we have to end at the starting node (4)
-%     EndpointsMod2 = [E4(i,:); E5(i,:); E6(i,:); E4(i,:)];
-%     fill3(EndpointsMod2(:,1),EndpointsMod2(:,2),EndpointsMod2(:,3), 'b-o')
-%     hold on
-%     MidpointsMod2 = [M4(i,:); M5(i,:); M6(i,:); M4(i,:)];
-%     fill3(MidpointsMod2(:,1),MidpointsMod2(:,2),MidpointsMod2(:,3), 'r-o')
-%     hold on
-%     InnerpointsMod2 = [I4(i,:); I5(i,:); I6(i,:); I4(i,:)];
-%     fill3(InnerpointsMod2(:,1),InnerpointsMod2(:,2),InnerpointsMod2(:,3), 'y-o')
-%     hold on
-% 
-%     % Tendons 1 - 6 since we're missing node 1 points
-%     Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
-%     plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-%     plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-%     plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
-%     plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
-%     plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
-%     plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
-%     hold on
-%     if i == 1
-%         title('Base State');
-%     elseif i == 250 || i == 700
-%         title('State 1');
-%     else
-%         title('State 2');
-%     end
-% end
-% title(t, 'Undulation Gait');
+figure(3)
+% for i = 1:100:final_row
+for i = final_row
+    % Calculate disk face for each of the six icosahedrons
+    % plotDisk(xE1, yE1, zE1, "#C7A491")
+    % plotDisk(xM1, yM1, zM1, "#EECFCA")
+    % plotDisk(xI1, yI1, zI1, "#5C4033")
+    % plotDisk(xE2, yE2, zE2, "#919682")
+    % plotDisk(xM2, yM2, zM2, "#C7CDBF")
+    % plotDisk(xI2, yI2, zI2, "#595E48")
+
+    % Cute colors
+    plotDisk(xE1, yE1, zE1, hex2rgb("#C7A491"))
+    plotDisk(xM1, yM1, zM1, hex2rgb("#EECFCA"))
+    plotDisk(xI1, yI1, zI1, hex2rgb("#997B66"))
+    plotDisk(xE2, yE2, zE2, hex2rgb("#919682"))
+    plotDisk(xM2, yM2, zM2, hex2rgb("#C7CDBF"))
+    plotDisk(xI2, yI2, zI2, hex2rgb("#595E48"))
+
+    % % White only
+    % plotDisk(xE1, yE1, zE1, 'w')
+    % plotDisk(xM1, yM1, zM1, 'w')
+    % plotDisk(xI1, yI1, zI1, 'w')
+    % plotDisk(xE2, yE2, zE2, 'w')
+    % plotDisk(xM2, yM2, zM2, 'w')
+    % plotDisk(xI2, yI2, zI2, 'w')
+    % % Tendons 1 - 6 since we're missing node 1 points
+    % Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+    % plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+    % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+    % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
+    % plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
+    % plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+    % Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
+    % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'k-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    % hold on
+
+    % Cute colors
+    Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+    plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+    plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+    plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
+    plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
+    plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+    Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
+    plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor',"#2E1503")
+    hold on
+
+    % Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+    % plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+    % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+    % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
+    % plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
+    % plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+    % Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
+    % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','w')
+    % hold on
+end
+
+
+% Plot different gaits within movement
+% Manually set time that different gaits occur in a movement sequence
+figure(4)
+t = tiledlayout(2,2);
+
+for i = [1, 250, 700, 1080]
+    nexttile;
+    % For module 1 since we have all points, we have to end at the starting node (1)
+    EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
+    fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
+    hold on
+    MidpointsMod1 = [M1(i,:); M2(i,:); M3(i,:); M1(i,:)];
+    fill3(MidpointsMod1(:,1),MidpointsMod1(:,2),MidpointsMod1(:,3), 'c-o')
+    hold on
+    InnerpointsMod1 = [I1(i,:); I2(i,:); I3(i,:); I1(i,:)];
+    fill3(InnerpointsMod1(:,1),InnerpointsMod1(:,2),InnerpointsMod1(:,3), 'm-o')
+    hold on
+
+    % For module 2 since we have all points, we have to end at the starting node (4)
+    EndpointsMod2 = [E4(i,:); E5(i,:); E6(i,:); E4(i,:)];
+    fill3(EndpointsMod2(:,1),EndpointsMod2(:,2),EndpointsMod2(:,3), 'b-o')
+    hold on
+    MidpointsMod2 = [M4(i,:); M5(i,:); M6(i,:); M4(i,:)];
+    fill3(MidpointsMod2(:,1),MidpointsMod2(:,2),MidpointsMod2(:,3), 'r-o')
+    hold on
+    InnerpointsMod2 = [I4(i,:); I5(i,:); I6(i,:); I4(i,:)];
+    fill3(InnerpointsMod2(:,1),InnerpointsMod2(:,2),InnerpointsMod2(:,3), 'y-o')
+    hold on
+
+    % Tendons 1 - 6 since we're missing node 1 points
+    Tendon1 = [E1(i,:); M1(i,:); I1(i,:)];
+    plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+    plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+    plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon4 = [E4(i,:); M4(i,:); I4(i,:)];
+    plot3(Tendon4(:,1),Tendon4(:,2),Tendon4(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon5 = [E5(i,:); M5(i,:); I5(i,:)];
+    plot3(Tendon5(:,1),Tendon5(:,2),Tendon5(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    Tendon6 = [E6(i,:); M6(i,:); I6(i,:)];
+    plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
+    hold on
+    if i == 1
+        title('Base State');
+    elseif i == 250 || i == 700
+        title('State 1');
+    else
+        title('State 2');
+    end
+end
+title(t, 'Undulation Gait');
 
 
 % Track two endpoints throughout gait movement
 % Manually set time that different gaits occur in a movement sequence
-figure(2)
-for i = [1, final_row] % Plot starting and ending full robot configurations
+figure(5)
+for i = [1, 3666] % Plot starting and ending full robot configurations
     % Calculate disk face for each of the six icosahedrons
     [centerE1, radiusE1, xE1, yE1, zE1] = triangle2circle(E1(i,:), E2(i,:), E3(i,:));
     [centerM1, radiusM1, xM1, yM1, zM1] = triangle2circle(M1(i,:), M2(i,:), M3(i,:));
@@ -413,7 +416,7 @@ for i = [1, final_row] % Plot starting and ending full robot configurations
         transformation1end2 = [rotation1end2, translation1end2; 0,0,0,1];
     end
 
-    if i == final_row
+    if i == 3666
         rotation2 = [uhat'; what'; vhat'];
         translation2 = origin;
         transformation2 = [rotation2, translation2; 0,0,0,1];
@@ -501,13 +504,19 @@ for i = [1, final_row] % Plot starting and ending full robot configurations
     % plot3(Tendon6(:,1),Tendon6(:,2),Tendon6(:,3), 'w-o', 'LineWidth', 2, 'MarkerEdgeColor','k')
     % hold on
 end
+ax = gca;
+grid on
+ax.GridAlpha = 0.3;
+ax.GridLineWidth = 2;
+%legend('1st End', '1st Mid', '1st Inner', '2nd End', '2nd Mid', '2nd Inner')
+%title('Starting and Ending Robot Inchworm Positions')
 
-% for i = 1:3:final_row
+% for i = 1:3:3780
 %     EndpointsMod1Tracking = (E1(i,:) + E2(i,:) + E3(i,:))/3;
 %     EndpointsMod2Tracking = (E4(i,:) + E5(i,:) + E6(i,:))/3;
 % 
-%     EndpointsMod1TrackingColor = 0 + (i/final_row);
-%     EndpointsMod2TrackingColor = 0 + (i/final_row);
+%     EndpointsMod1TrackingColor = 0 + (i/3780);
+%     EndpointsMod2TrackingColor = 0 + (i/3780);
 % 
 %     plot3(EndpointsMod1Tracking(:,1), EndpointsMod1Tracking(:,2), EndpointsMod1Tracking(:,3), 'x', 'Color', [0 0 EndpointsMod1TrackingColor], 'MarkerSize', 15, 'LineWidth', 3)
 %     hold on
@@ -515,13 +524,12 @@ end
 %     hold on
 % end
 %view(0,0)
-title(t, 'Missing Tendons Tracked');
-
+% title(t, 'Full Inchworm Gait Tracked');
 
 
 % Figuring out reference frame stuff
-figure(3)
-for i = [1, 121, 131, 251, 261, 371, 372, 491, 501, 561, 562, 641, 651, 701, 801, 971, 1051, 1141, 1151, 1221, 1231, 1351, 1361, 1451, 1452, 1551, 1561, 1651, 1661, 1761, 2661, 2801, 2881, 3031, 3032, 3101, 3111, 3241, 3251, 3371, 3381, 3521, 3761, 3841] % Plot starting and ending full robot configurations
+figure(6)
+for i = [1, 145, 165, 300, 315, 590, 680, 900, 950, 1220, 1235, 1500] % Plot starting and ending full robot configurations
     % For module 1 since we have all points, we have to end at the starting node (1)
     EndpointsMod1 = [E1(i,:); E2(i,:); E3(i,:); E1(i,:)];
     fill3(EndpointsMod1(:,1),EndpointsMod1(:,2),EndpointsMod1(:,3), 'g-o')
@@ -571,7 +579,7 @@ for i = [1, 121, 131, 251, 261, 371, 372, 491, 501, 561, 562, 641, 651, 701, 801
     [uhat2, vhat2, what2, origin2] = movement(E4(i,:), E5(i,:), E6(i,:), final_row);
 
     % Calculate rotation and translation from these orthonormal basis vectors
-    if i == 1 || i == 131 || i == 261 || i == 372 || i == 501 || i == 562 || i == 651 || i == 801 || i == 1051 || i == 1151 || i == 1231 || i == 1361 || i == 1452 || i == 1561 || i == 1661 || i == 2661 || i == 2881 || i == 3032 || i == 3111 || i == 3251 || i == 3381 || i == 3761
+    if i == 1 || i == 165 || i == 315 || i == 680 || i == 950 || i == 1235
         rotation1 = [uhat'; what'; vhat'];
         translation1 = origin;
         transformation1 = [rotation1, translation1; 0,0,0,1];
@@ -581,7 +589,7 @@ for i = [1, 121, 131, 251, 261, 371, 372, 491, 501, 561, 562, 641, 651, 701, 801
         transformation1end2 = [rotation1end2, translation1end2; 0,0,0,1];
     end
 
-    if i == 121 || i == 251 || i == 670 || i == 900 || i == 1120 || i == 1320 || i == 1460 || i == 1720 || i == 1950 || i == 2150 || i == 2340 || i == 2580 || i == 2730 || i == 2930 || i == 3080 || i == 3320 || i == 3520 || i == 3720 || i == 3860 || i == 4070 || i == 4310 || i == 4520 || i == 4700 || i == 4890
+    if i == 145 || i == 300 || i == 590 || i == 900 || i == 1220 || i == 1500
         rotation2 = [uhat'; what'; vhat'];
         translation2 = origin;
         transformation2 = [rotation2, translation2; 0,0,0,1];
@@ -626,15 +634,14 @@ for i = [1, 121, 131, 251, 261, 371, 372, 491, 501, 561, 562, 641, 651, 701, 801
     hold on
 
 end
-title(t, 'Missing Tendon 3D Movement');
-
+title(t, 'Inchworm 3D Movement');
 
 
 
 % [rotx1, roty1, rotz1, t1] = tracking(E1, E2, E3, final_row);
 % [rotx2, roty2, rotz2, t2] = tracking(E4, E5, E6, final_row);
-% 
-% 
+
+
 % fprintf('Mid of E1, E2, E3 rotated %.2d%c, %.2d%c, %.2d%c in X, Y, and Z, and translated %.2dmm in X, %.2dmm in Y, %.2dmm in Z\n', round(rotx1), char(176), round(roty1), char(176), round(rotz1), char(176), round(t1(1)), round(t1(2)), round(t1(3)))
 % fprintf('Mid of E4, E5, E6 rotated %.2d%c, %.2d%c, %.2d%c in X, Y, and Z, and translated %.2dmm in X, %.2dmm in Y, %.2dmm in Z\n', round(rotx2), char(176), round(roty2), char(176), round(rotz2), char(176), round(t2(1)), round(t2(2)), round(t2(3)))
 
@@ -708,6 +715,7 @@ function [rotx, roty, rotz, t] = tracking(E1, E2, E3, final_row)
     %t = -R*(repmat(centroid_first, 3, 1)) + (repmat(centroid_last, 3, 1));
 end
 
+% function [rx, ry, rz, trans] = movement(E1, E2, E3, final_row)
 function [uhat, vhat, what, origin] = movement(E1, E2, E3, final_row)
     % Define c.s. in starting and end frames, then calculate rotation 
     % matrix and translation vector between first and last frames

@@ -718,12 +718,12 @@ function plotCurvatureLine(i, color, E1, E2, E3, M1, M2, M3, I1, I2, I3)
         Tendon1 = [centerE1; centerM1; centerI1];
         plot3(Tendon1(:,1),Tendon1(:,2),Tendon1(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
         hold on
-        Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
-        plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
-        hold on
-        Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
-        plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
-        hold on
+        % Tendon2 = [E2(i,:); M2(i,:); I2(i,:)];
+        % plot3(Tendon2(:,1),Tendon2(:,2),Tendon2(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        % hold on
+        % Tendon3 = [E3(i,:); M3(i,:); I3(i,:)];
+        % plot3(Tendon3(:,1),Tendon3(:,2),Tendon3(:,3), 'Color',"#2E1503", 'LineWidth', 2, 'MarkerEdgeColor','k')
+        % hold on
         
         title("Maximum Curvature Depending on Motor Movement");
         view(90,0);
