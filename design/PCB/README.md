@@ -1,4 +1,5 @@
 HUTS PCB Shield
+<img width="1846" height="1477" alt="Controls assembly" src="https://github.com/user-attachments/assets/bc523a5d-7f3d-479f-9d3c-64c1e046d454" />
 
 This repository contains the printed circuit board design files for the onboard electrical shield used by the Hyper-redundant Underactuated Tensegrity Snake (HUTS). 
 
