@@ -18,10 +18,10 @@ Repository contents:
         PDF exports of the individual PCB layers for visual inspection and documentation.
 5. HUTS - PCB - CAD.step
         STEP model of the PCB.
-6. HUTS - PCB - 2D View Top .png
+6. HUTS - PCB - 3D View Top .png
         Top 2D view showing the components, switches, battery connectors, and connectors.
 7. HUTS - PCB - 3D View Bottom.png
-        Bottom 2D view showing the motor driver ICs and the 40-pin controller header.
+        Bottom 3D view showing the motor driver ICs and the 40-pin controller header.
 
 
 PCB overview:
@@ -34,5 +34,7 @@ PCB overview:
   Logic supply: regulated +5 V output from the Battery 
   Controller interface: 40-pin header
   Motor Driver: TB6612FNG
+  
+<img width="2160" height="3559" alt="HUTS - PCB - 3D View Bottom" src="https://github.com/user-attachments/assets/215da4c3-a85e-4837-802f-f34a14bc0fe5" /> <img width="2160" height="3518" alt="HUTS - PCB - 3D View Top " src="https://github.com/user-attachments/assets/0ce80772-47d5-4ba9-ac35-35ed026d12e9" />
 
-[HUTS - PCB - Electrical Shield Schematic.pdf](https://github.com/user-attachments/files/30242271/HUTS.-.PCB.-.Electrical.Shield.Schematic.pdf)
+
