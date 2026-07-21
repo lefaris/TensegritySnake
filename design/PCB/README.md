@@ -1,11 +1,11 @@
 HUTS PCB Shield
-
+<p align="center">
 <img
   width="600"
   alt="Controls assembly" src="https://github.com/user-attachments/assets/9fdf3107-c9bb-4c22-91ae-63afc063e8db" />
+</p>
 
 This repository contains the printed circuit board design files for the onboard electrical shield used by the Hyper-redundant Underactuated Tensegrity Snake (HUTS). 
-
 
 Repository contents:
 1. HUTS - PCB - Easy EDA Source.json
@@ -34,3 +34,5 @@ PCB overview:
   Logic supply: regulated +5 V output from the Battery 
   Controller interface: 40-pin header
   Motor Driver: TB6612FNG
+
+[HUTS - PCB - Electrical Shield Schematic.pdf](https://github.com/user-attachments/files/30242271/HUTS.-.PCB.-.Electrical.Shield.Schematic.pdf)
