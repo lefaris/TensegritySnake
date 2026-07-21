@@ -35,6 +35,6 @@ PCB overview:
   Controller interface: 40-pin header
   Motor Driver: TB6612FNG
   
-<img width="2160" height="3559" alt="HUTS - PCB - 3D View Bottom" src="https://github.com/user-attachments/assets/215da4c3-a85e-4837-802f-f34a14bc0fe5" /> <img width="2160" height="3518" alt="HUTS - PCB - 3D View Top " src="https://github.com/user-attachments/assets/0ce80772-47d5-4ba9-ac35-35ed026d12e9" />
+<img width="1000" alt="HUTS - PCB - 3D View Bottom" src="https://github.com/user-attachments/assets/215da4c3-a85e-4837-802f-f34a14bc0fe5" /> <img width="1000" alt="HUTS - PCB - 3D View Top " src="https://github.com/user-attachments/assets/0ce80772-47d5-4ba9-ac35-35ed026d12e9" />
 
 
