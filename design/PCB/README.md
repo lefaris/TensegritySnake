@@ -32,10 +32,15 @@ This repository contains the printed circuit board design files for the onboard 
   **Copper layers:** 2
   
   **Motor outputs:** 6 brushed-DC motor channels
+  
   **Motor drivers:** 3 × TB6612FNG dual H-bridge drivers
+  
   **Battery inputs:** 2 independently switched inputs
+  
   **Logic supply:** regulated +5 V output from the Battery 
+
   **Controller interface:** 40-pin header
+  
   **Motor Driver:** TB6612FNG
 
 <p align="center">
@@ -66,17 +71,30 @@ The HUTS PCB shield centralizes power distribution and motor control for the rob
 
 ### Component Description
   BATTERY: Two-pin JST battery connectors used to connect the onboard battery supplies. 
+  
   SWITCH1 and SWITCH2: SS-12D10-G5 slide switches.
+  
   Q1, Q2, and Q3: MOSFETs.
+  
   C1, C2, and C3: 10 µF capacitors.
+  
   REGULATOR: LM2576S-5.0.
+  
   L1: 100 µH inductor.
+  
   D1: SS34 Schottky diode.
+  
   C7: 100 µF capacitor.
+  
   C8: 1000 µF capacitor.
+  
   DRIVER1, DRIVER2, and DRIVER3: Three TB6612FNG dual H-bridge motor drivers. 
           Each driver controls two brushed DC motors, providing six total motor-control channels.
+          
   R1, R2, and R3: 10 kΩ resistors.
+  
   C4, C5, and C6: 10 µF capacitors.
+  
   MOTOR1 - MOTOR6: Two-pin jst connectors.
+  
   PI_ZERO_HEADER:  2 × 20, 40-pin header.
