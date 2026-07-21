@@ -26,8 +26,11 @@ This repository contains the printed circuit board design files for the onboard 
 
 ## PCB overview:
   **Board outline:** 42.0 mm × 70.0 mm
+  
   **Corner radius:** 3.5 mm
+  
   **Copper layers:** 2
+  
   **Motor outputs:** 6 brushed-DC motor channels
   **Motor drivers:** 3 × TB6612FNG dual H-bridge drivers
   **Battery inputs:** 2 independently switched inputs
