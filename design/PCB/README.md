@@ -7,7 +7,7 @@
 
 This repository contains the printed circuit board design files for the onboard electrical shield used by the Hyper-redundant Underactuated Tensegrity Snake (HUTS). 
 
-** Repository contents:
+**Repository contents:**
 1. HUTS - PCB - Easy EDA Source.json
         Editable EasyEDA PCB source. Use this file for layout changes, routing updates, silkscreen edits, or new manufacturing exports.
 2. HUTS - PCB - Electrical Shield Schematic.pdf
@@ -25,15 +25,15 @@ This repository contains the printed circuit board design files for the onboard 
 
 
 ## PCB overview:
-  Board outline: 42.0 mm × 70.0 mm
-  Corner radius: 3.5 mm
-  Copper layers: 2
-  Motor outputs: 6 brushed-DC motor channels
-  Motor drivers: 3 × TB6612FNG dual H-bridge drivers
-  Battery inputs: 2 independently switched inputs
-  Logic supply: regulated +5 V output from the Battery 
-  Controller interface: 40-pin header
-  Motor Driver: TB6612FNG
+  **Board outline:** 42.0 mm × 70.0 mm
+  **Corner radius:** 3.5 mm
+  **Copper layers:** 2
+  **Motor outputs:** 6 brushed-DC motor channels
+  **Motor drivers:** 3 × TB6612FNG dual H-bridge drivers
+  **Battery inputs:** 2 independently switched inputs
+  **Logic supply:** regulated +5 V output from the Battery 
+  **Controller interface:** 40-pin header
+  **Motor Driver:** TB6612FNG
 
 <p align="center">
   <img
